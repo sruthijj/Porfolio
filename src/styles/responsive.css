@@ -1,0 +1,129 @@
+/* Responsive Rules */
+
+/* Small & Standard Mobile (320px - 767px) */
+@media (max-width: 767px) {
+  :root {
+    --border-width: 2.5px;
+    --border-style: 2.5px solid var(--color-ink);
+    --shadow-sm: 3px 3px 0 var(--color-ink);
+    --shadow-md: 4px 4px 0 var(--color-ink);
+    --shadow-lg: 6px 6px 0 var(--color-ink);
+    --page-gutter: 1rem;
+    --section-gap: 3.5rem;
+    --header-height: 64px;
+  }
+
+  .nav-desktop-links,
+  .nav-desktop-actions {
+    display: none !important;
+  }
+
+  .nav-mobile-toggle {
+    display: inline-flex !important;
+  }
+
+  .hero-headline {
+    font-size: clamp(2.8rem, 13vw, 4.2rem);
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+  }
+
+  .hero-word-accent {
+    margin-block: 0.2rem;
+  }
+
+  .hero-lead-text {
+    font-size: 1.05rem;
+  }
+
+  .hero-cta-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    width: 100%;
+  }
+
+  .hero-cta-group .btn {
+    width: 100%;
+  }
+
+  /* Hide or reposition floating stickers on mobile to avoid overlapping text */
+  .hero-floating-sticker {
+    display: none !important;
+  }
+
+  .hero-meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .about-poster-frame {
+    padding: 1rem;
+  }
+
+  .timeline-header-grid {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .timeline-meta-badges {
+    align-items: flex-start;
+  }
+
+  .project-card-footer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .project-card-footer .btn {
+    width: 100%;
+  }
+
+  .contact-buttons-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .contact-buttons-row .btn {
+    width: 100%;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+}
+
+/* Tablet (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --page-gutter: 2rem;
+    --section-gap: 4.5rem;
+  }
+
+  .hero-floating-sticker.sticker-pos-3 {
+    display: none;
+  }
+
+  .hero-floating-sticker.sticker-pos-1 {
+    top: 5%;
+    right: 2%;
+    transform: scale(0.85);
+  }
+
+  .hero-floating-sticker.sticker-pos-2 {
+    bottom: 20%;
+    right: 4%;
+    transform: scale(0.85);
+  }
+}
+
+/* Desktop & Large Desktop (1024px and up) */
+@media (min-width: 1024px) {
+  .nav-mobile-toggle {
+    display: none !important;
+  }
+}
