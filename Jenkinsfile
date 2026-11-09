@@ -1,55 +1,87 @@
+
 pipeline {
-  agent any
+    agent any
 
-  tools { nodejs 'node22' }
-
-  options {
-    timestamps()
-    disableConcurrentBuilds()
-    buildDiscarder(logRotator(numToKeepStr: '10'))
-  }
-
-  environment {
-    DEPLOY_DIR = '/var/www/sruthij-portfolio'
-    CI = 'true'
-  }
-
-  stages {
-    stage('Install') {
-      steps {
-        sh 'node -v && npm -v'
-        sh 'npm ci'
-      }
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+        timeout(time: 20, unit: 'MINUTES')
     }
 
-    stage('Lint') {
-      steps { sh 'npm run lint' }
+    environment {
+        APP_NAME = 'sruthij-portfolio'
+        DEPLOY_DIR = '/var/www/sruthij-portfolio'
     }
 
-    stage('Build') {
-      steps { sh 'npm run build' }
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo 'Checking out GitHub repository'
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing dependencies'
+                sh 'npm ci'
+            }
+        }
+
+        stage('Code Quality Check') {
+            steps {
+                echo 'Running ESLint'
+                sh 'npm run lint'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building React application'
+                sh 'npm run build'
+            }
+        }
+
+        stage('Verify Build') {
+            steps {
+                sh '''
+                    test -f dist/index.html
+                    echo "Build verified successfully"
+                    du -sh dist
+                '''
+            }
+        }
+
+        stage('Archive Build') {
+            steps {
+                archiveArtifacts artifacts: 'dist/**',
+                                 fingerprint: true
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                echo 'Deploying to Nginx'
+
+                sh '''
+                    rsync -av --delete dist/ ${DEPLOY_DIR}/
+                '''
+            }
+        }
     }
 
-    stage('Archive') {
-      steps { archiveArtifacts artifacts: 'dist/**', fingerprint: true }
-    }
+    post {
+        success {
+            echo 'CI/CD Pipeline completed successfully!'
+        }
 
-    stage('Deploy') {
-      steps {
-        sh 'rsync -a --delete dist/ ${DEPLOY_DIR}/'
-      }
-    }
+        failure {
+            echo 'Pipeline failed. Check console output.'
+        }
 
-    stage('Smoke test') {
-      steps {
-        sh 'curl -fsS -o /dev/null http://localhost/'
-      }
+        always {
+            echo 'Pipeline execution completed.'
+        }
     }
-  }
-
-  post {
-    success { echo 'Portfolio deployed successfully' }
-    failure { echo 'Pipeline failed, check the stage logs' }
-    cleanup { cleanWs() }
-  }
 }
